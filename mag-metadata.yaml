@@ -1,0 +1,18 @@
+name: nf.core mag
+identifier: WF_0d8183.36
+description: Assembly and binning of metagenomes
+softwareVersion:
+  versionName: 2.1.1
+metadataStatus: Released
+workflowStatus: Released
+workflowFile: mag.wdl
+repoName: nfcore-mag
+gitTag: master
+inputsTemplate: inputs.json
+executable: true
+current: true
+codeRepository:
+  URL: https://github.com/truwl/nfcore-mag/
+WebSite:
+- URL: https://github.com/nf-core/mag
+  name: nf-core/mag
