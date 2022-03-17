@@ -1,0 +1,602 @@
+parameter_meta:
+  mag.samplesheet:
+    description: Input FastQ files or CSV samplesheet file containing information
+      about the samples in the experiment.
+    group: input_output_options
+    help: "Use this to specify the location of your input FastQ files. For example:\n\
+      \n```bash\n--input 'path/to/data/sample_*_{1,2}.fastq.gz'\n``` \n\nAlternatively,\
+      \ to assign different groups or to include long reads for hybrid assembly with\
+      \ metaSPAdes, you can specify a CSV samplesheet input file with 5 columns and\
+      \ the following header: sample,group,short_reads_1,short_reads_2,long_reads.\
+      \ See [usage docs](https://nf-co.re/mag/usage#input-specifications)."
+    hidden: false
+  mag.single_end:
+    description: Specifies that the input is single-end reads.
+    group: input_output_options
+    help: 'By default, the pipeline expects paired-end data. If you have single-end
+      data, you need to specify `--single_end` on the command line when you launch
+      the pipeline. A normal glob pattern, enclosed in quotation marks, can then be
+      used for `--input`. For example:
+
+
+      ```bash
+
+      --single_end --input ''*.fastq''
+
+      ```
+
+
+      It is not possible to run a mixture of single-end and paired-end files in one
+      run.'
+    hidden: false
+  mag.outdir:
+    description: Path to the output directory where the results will be saved.
+    group: input_output_options
+    help: ''
+    hidden: false
+  mag.email:
+    description: Email address for completion summary.
+    group: input_output_options
+    help: Set this parameter to your e-mail address to get a summary e-mail with details
+      of the run sent to you when the workflow exits. If set in your user config file
+      (`~/.nextflow/config`) then you don't need to specify this on the command line
+      for every run.
+    hidden: false
+  mag.multiqc_title:
+    description: MultiQC report title. Printed as page header, used for filename if
+      not otherwise specified.
+    group: input_output_options
+    help: ''
+    hidden: false
+  mag.igenomes_base:
+    description: Directory / URL base for iGenomes references.
+    group: reference_genome_options
+    help: ''
+    hidden: true
+  mag.igenomes_ignore:
+    description: Do not load the iGenomes reference config.
+    group: reference_genome_options
+    help: Do not load `igenomes.config` when running the pipeline. You may choose
+      this option if you observe clashes between custom parameters and those supplied
+      in `igenomes.config`.
+    hidden: true
+  mag.custom_config_version:
+    description: Git commit id for Institutional configs.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.custom_config_base:
+    description: Base directory for Institutional configs.
+    group: institutional_config_options
+    help: If you're running offline, Nextflow will not be able to fetch the institutional
+      config files from the internet. If you don't need them, then this is not a problem.
+      If you do need them, you should download the files from the repo and tell Nextflow
+      where to find them with this parameter.
+    hidden: true
+  mag.hostnames:
+    description: Institutional configs hostname.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.config_profile_name:
+    description: Institutional config name.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.config_profile_description:
+    description: Institutional config description.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.config_profile_contact:
+    description: Institutional config contact information.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.config_profile_url:
+    description: Institutional config URL link.
+    group: institutional_config_options
+    help: ''
+    hidden: true
+  mag.max_cpus:
+    description: Maximum number of CPUs that can be requested for any single job.
+    group: max_job_request_options
+    help: Use to set an upper-limit for the CPU requirement for each process. Should
+      be an integer e.g. `--max_cpus 1`
+    hidden: true
+  mag.max_memory:
+    description: Maximum amount of memory that can be requested for any single job.
+    group: max_job_request_options
+    help: Use to set an upper-limit for the memory requirement for each process. Should
+      be a string in the format integer-unit e.g. `--max_memory '8.GB'`
+    hidden: true
+  mag.max_time:
+    description: Maximum amount of time that can be requested for any single job.
+    group: max_job_request_options
+    help: Use to set an upper-limit for the time requirement for each process. Should
+      be a string in the format integer-unit e.g. `--max_time '2.h'`
+    hidden: true
+  mag.help:
+    description: Display help text.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.publish_dir_mode:
+    description: Method used to save pipeline results to output directory.
+    group: generic_options
+    help: The Nextflow `publishDir` option specifies which intermediate files should
+      be saved to the output directory. This option tells the pipeline what method
+      should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir)
+      for details.
+    hidden: true
+  mag.email_on_fail:
+    description: Email address for completion summary, only when pipeline fails.
+    group: generic_options
+    help: An email address to send a summary email to when the pipeline is completed
+      - ONLY sent if the pipeline does not exit successfully.
+    hidden: true
+  mag.plaintext_email:
+    description: Send plain-text email instead of HTML.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.max_multiqc_email_size:
+    description: File size limit when attaching MultiQC reports to summary emails.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.monochrome_logs:
+    description: Do not use coloured log outputs.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.multiqc_config:
+    description: Custom config file to supply to MultiQC.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.tracedir:
+    description: Directory to keep pipeline Nextflow logs and reports.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.validate_params:
+    description: Boolean whether to validate parameters against the schema at runtime
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.show_hidden_params:
+    description: Show all params when using `--help`
+    group: generic_options
+    help: By default, parameters set as _hidden_ in the schema are not shown on the
+      command line when a user runs with `--help`. Specifying this option will tell
+      the pipeline to show all parameters.
+    hidden: true
+  mag.enable_conda:
+    description: Run this workflow with Conda. You can also use '-profile conda' instead
+      of providing this parameter.
+    group: generic_options
+    help: ''
+    hidden: true
+  mag.singularity_pull_docker_container:
+    description: Instead of directly downloading Singularity images for use with Singularity,
+      force the workflow to pull and convert Docker containers instead.
+    group: generic_options
+    help: This may be useful for example if you are unable to directly pull Singularity
+      containers to run the pipeline due to http/https proxy issues.
+    hidden: true
+  mag.megahit_fix_cpu_1:
+    description: Fix number of CPUs for MEGAHIT to 1. Not increased with retries.
+    group: reproducibility_options
+    help: "MEGAHIT only generates reproducible results when run single-threaded. \n\
+      \nWhen using this parameter do not change the number of CPUs for the `megahit`\
+      \ process with a custom config file. This would result in an error.\n\nDefault:\
+      \ The number of CPUs is specified in the `base.config` file, and increased with\
+      \ each retry."
+    hidden: false
+  mag.spades_fix_cpus:
+    description: Fix number of CPUs used by SPAdes. Not increased with retries.
+    group: reproducibility_options
+    help: 'SPAdes is designed to be deterministic for a given number of threads. To
+      generate reproducible results fix the number of CPUs using this parameter.
+
+
+      When using this parameter do not change the number of CPUs for the `spades`
+      process with a custom config file. This would result in an error.
+
+
+      Default: -1 (the number of CPUs is specified in the `base.config` or in a custom
+      config file, and increased with each retry).'
+    hidden: false
+  mag.spadeshybrid_fix_cpus:
+    description: Fix number of CPUs used by SPAdes hybrid. Not increased with retries.
+    group: reproducibility_options
+    help: 'SPAdes is designed to be deterministic for a given number of threads. To
+      generate reproducible results fix the number of CPUs using this parameter.
+
+
+      When using this parameter do not change the number of CPUs for the `spadeshybrid`
+      process with a custom config file. This would result in an error.
+
+
+      Default: -1 (the number of CPUs is specified in the `base.config` or in a custom
+      config file, and increased with each retry).'
+    hidden: false
+  mag.metabat_rng_seed:
+    description: RNG seed for MetaBAT2.
+    group: reproducibility_options
+    help: MetaBAT2 is run by default with a fixed seed within this pipeline, thus
+      producing reproducible results. You can set it also to any other positive integer
+      to ensure reproducibility. Set the parameter to 0 to use a random seed.
+    hidden: false
+  mag.save_trimmed_fail:
+    description: Save the by fastp trimmed FastQ files in the results directory.
+    group: quality_control_for_short_reads_options
+    help: By default, trimmed FastQ files will not be saved to the results directory.
+      Specify this flag (or set to true in your config file) to copy these files to
+      the results directory when complete.
+    hidden: false
+  mag.fastp_qualified_quality:
+    description: Minimum phred quality value of a base to be qualified.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: false
+  mag.fastp_cut_mean_quality:
+    description: The mean quality requirement used for per read sliding window cutting
+      by fastp.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: false
+  mag.host_genome:
+    description: Name of iGenomes reference for host contamination removal.
+    group: quality_control_for_short_reads_options
+    help: "This parameter is mutually exclusive with `--host_genome`. Host read removal\
+      \ is done with Bowtie2. \nBoth the iGenomes FASTA file as well as corresponding,\
+      \ already pre-built Bowtie 2 index files will be used."
+    hidden: false
+  mag.host_fasta:
+    description: Fasta reference file for host contamination removal.
+    group: quality_control_for_short_reads_options
+    help: This parameter is mutually exclusive with `--host_fasta`. The reference
+      can be masked. Host read removal is done with Bowtie2.
+    hidden: false
+  mag.host_removal_verysensitive:
+    description: Use the `--very-sensitive` instead of the`--sensitive`setting for
+      Bowtie 2 to map reads against the host genome.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: false
+  mag.host_removal_save_ids:
+    description: Save the read IDs of removed host reads.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: false
+  mag.keep_phix:
+    description: Keep reads similar to the Illumina internal standard PhiX genome.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: false
+  mag.phix_reference:
+    description: Genome reference used to remove Illumina PhiX contaminant reads.
+    group: quality_control_for_short_reads_options
+    help: ''
+    hidden: true
+  mag.skip_adapter_trimming:
+    description: Skip removing adapter sequences from long reads.
+    group: quality_control_for_long_reads_options
+    help: ''
+    hidden: false
+  mag.longreads_min_length:
+    description: Discard any read which is shorter than this value.
+    group: quality_control_for_long_reads_options
+    help: ''
+    hidden: false
+  mag.longreads_keep_percent:
+    description: Keep this percent of bases.
+    group: quality_control_for_long_reads_options
+    help: ''
+    hidden: false
+  mag.longreads_length_weight:
+    description: The higher the more important is read length when choosing the best
+      reads.
+    group: quality_control_for_long_reads_options
+    help: 'The default value focuses on length instead of quality to improve assembly
+      size.
+
+      In order to assign equal weights to read lengths and read qualities set this
+      parameter to 1.
+
+      This might be useful, for example, to benefit indirectly from the removal of
+      short host reads (causing lower qualities for reads not overlapping filtered
+      short reads).'
+    hidden: false
+  mag.keep_lambda:
+    description: Keep reads similar to the ONT internal standard Escherichia virus
+      Lambda genome.
+    group: quality_control_for_long_reads_options
+    help: ''
+    hidden: false
+  mag.lambda_reference:
+    description: Genome reference used to remove ONT Lambda contaminant reads.
+    group: quality_control_for_long_reads_options
+    help: ''
+    hidden: true
+  mag.centrifuge_db:
+    description: Database for taxonomic binning with centrifuge.
+    group: taxonomic_profiling_options
+    help: E.g. ftp://ftp.ccb.jhu.edu/pub/infphilo/centrifuge/data/p_compressed+h+v.tar.gz.
+    hidden: false
+  mag.kraken2_db:
+    description: Database for taxonomic binning with kraken2.
+    group: taxonomic_profiling_options
+    help: The database file must be a compressed tar archive that contains at least
+      the three files `hash.k2d`, `opts.k2d` and `taxo.k2d`. E.g. ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken_8GB_202003.tgz.
+    hidden: false
+  mag.skip_krona:
+    description: Skip creating a krona plot for taxonomic binning.
+    group: taxonomic_profiling_options
+    help: ''
+    hidden: false
+  mag.cat_db:
+    description: Database for taxonomic classification of metagenome assembled genomes.
+    group: taxonomic_profiling_options
+    help: E.g. https://tbb.bio.uu.nl/bastiaan/CAT_prepare/CAT_prepare_20210107.tar.gz.
+      This parameter is mutually exclusive with `--cat_db_generate`. The zipped file
+      needs to contain a folder named `*taxonomy*` and `*database*` that hold the
+      respective files.
+    hidden: false
+  mag.cat_db_generate:
+    description: Generate CAT database.
+    group: taxonomic_profiling_options
+    help: Download the taxonomy files from NCBI taxonomy, the nr database and generate
+      CAT database. This parameter is mutually exclusive with `--cat_db`. Useful to
+      build a CAT database with the same DIAMOND version as used for running CAT classification,
+      avoiding compatibility problems.
+    hidden: false
+  mag.save_cat_db:
+    description: Save the CAT database generated when specified by `--cat_db_generate`.
+    group: taxonomic_profiling_options
+    help: Useful to allow reproducibility, as old versions of prebuild CAT databases
+      do not always remain accessible and underlying NCBI taxonomy and nr databases
+      change.
+    hidden: false
+  mag.gtdb:
+    description: GTDB database for taxonomic classification of bins with GTDB-tk.
+    group: taxonomic_profiling_options
+    help: For information which GTDB reference databases are compatible with the used
+      GTDB-tk version see https://ecogenomics.github.io/GTDBTk/installing/index.html#gtdb-tk-reference-data.
+    hidden: false
+  mag.gtdbtk_min_completeness:
+    description: Min. bin completeness (in %) required to apply GTDB-tk classification.
+    group: taxonomic_profiling_options
+    help: Completeness assessed with BUSCO analysis (100% - %Missing). Must be greater
+      than 0 (min. 0.01) to avoid GTDB-tk errors. If too low, GTDB-tk classification
+      results can be impaired due to not enough marker genes!
+    hidden: false
+  mag.gtdbtk_max_contamination:
+    description: Max. bin contamination (in %) allowed to apply GTDB-tk classification.
+    group: taxonomic_profiling_options
+    help: Contamination approximated based on BUSCO analysis (%Complete and duplicated).
+      If too high, GTDB-tk classification results can be impaired due to contamination!
+    hidden: false
+  mag.gtdbtk_min_perc_aa:
+    description: Min. fraction of AA (in %) in the MSA for bins to be kept.
+    group: taxonomic_profiling_options
+    help: ''
+    hidden: false
+  mag.gtdbtk_min_af:
+    description: Min. alignment fraction to consider closest genome.
+    group: taxonomic_profiling_options
+    help: ''
+    hidden: false
+  mag.gtdbtk_pplacer_cpus:
+    description: Number of CPUs used for the by GTDB-Tk run tool pplacer.
+    group: taxonomic_profiling_options
+    help: A low number of CPUs helps to reduce the memory required/reported by GTDB-Tk.
+      See also the [GTDB-Tk documentation](https://ecogenomics.github.io/GTDBTk/faq.html#gtdb-tk-reaches-the-memory-limit-pplacer-crashes).
+    hidden: false
+  mag.gtdbtk_pplacer_scratch:
+    description: Reduce GTDB-Tk memory consumption by running pplacer in a setting
+      writing to disk.
+    group: taxonomic_profiling_options
+    help: Will be slower. Set to `false` to turn this off.
+    hidden: false
+  mag.coassemble_group:
+    description: Co-assemble samples within one group, instead of assembling each
+      sample separately.
+    group: assembly_options
+    help: ''
+    hidden: false
+  mag.spades_options:
+    description: Additional custom options for SPAdes.
+    group: assembly_options
+    help: An example is adjusting k-mers ("-k 21,33,55,77") or adding [advanced options](https://github.com/ablab/spades#advanced-options).
+      But not -t, -m, -o or --out-prefix, because these are already in use.
+    hidden: false
+  mag.megahit_options:
+    description: Additional custom options for MEGAHIT.
+    group: assembly_options
+    help: An example is adjusting presets (e.g. "--presets meta-large"), k-mers (e.g.
+      "-k 21,33,55,77") or adding other [advanced options](https://github.com/voutcn/megahit#advanced-usage).
+      For example, increase the minimum k-mer in the event of an error message such
+      as "Too many vertices in the unitig graph, you may increase the kmer size to
+      remove tons of erroneous kmers." in the MEGAHIT log file. But not --threads,
+      --memory, -o or input read files, because these are already in use.
+    hidden: false
+  mag.skip_spades:
+    description: Skip Illumina-only SPAdes assembly.
+    group: assembly_options
+    help: ''
+    hidden: false
+  mag.skip_spadeshybrid:
+    description: Skip SPAdes hybrid assembly.
+    group: assembly_options
+    help: ''
+    hidden: false
+  mag.skip_megahit:
+    description: Skip MEGAHIT assembly.
+    group: assembly_options
+    help: ''
+    hidden: false
+  mag.skip_quast:
+    description: Skip metaQUAST.
+    group: assembly_options
+    help: ''
+    hidden: false
+  mag.skip_prodigal:
+    description: Skip Prodigal gene prediction
+    group: gene_prediction_options
+    help: ''
+    hidden: false
+  mag.binning_map_mode:
+    description: Defines mapping strategy to compute co-abundances for binning, i.e.
+      which samples will be mapped against the assembly.
+    group: binning_options
+    help: 'Available: `all`, `group` or `own`. Note that `own` cannot be specified
+      in combination with `--coassemble_group`.
+
+
+      Note that specifying `all` without additionally specifying `--coassemble_group`
+      results in `n^2` mapping processes for each assembly method, where `n` is the
+      number of samples.'
+    hidden: false
+  mag.skip_binning:
+    description: Skip metagenome binning.
+    group: binning_options
+    help: ''
+    hidden: false
+  mag.min_contig_size:
+    description: Minimum contig size to be considered for binning and for bin quality
+      check.
+    group: binning_options
+    help: For forwarding into downstream analysis, i.e. QUAST and BUSCO, and reporting.
+    hidden: false
+  mag.min_length_unbinned_contigs:
+    description: Minimal length of contigs that are not part of any bin but treated
+      as individual genome.
+    group: binning_options
+    help: Contigs that do not fulfill the thresholds of `--min_length_unbinned_contigs`
+      and `--max_unbinned_contigs` are pooled for downstream analysis and reporting,
+      except contigs that also do not fullfill `--min_contig_size` are not considered
+      further.
+    hidden: false
+  mag.max_unbinned_contigs:
+    description: Maximal number of contigs that are not part of any bin but treated
+      as individual genome.
+    group: binning_options
+    help: Contigs that do not fulfill the thresholds of `--min_length_unbinned_contigs`
+      and `--max_unbinned_contigs` are pooled for downstream analysis and reporting,
+      except contigs that also do not fullfill `--min_contig_size` are not considered
+      further.
+    hidden: false
+  mag.skip_prokka:
+    description: Skip Prokka genome annotation.
+    group: binning_options
+    help: ''
+    hidden: false
+  mag.skip_busco:
+    description: Disable bin QC with BUSCO.
+    group: bin_quality_check_options
+    help: ''
+    hidden: false
+  mag.busco_reference:
+    description: Download path for BUSCO lineage dataset, instead of using automated
+      lineage selection.
+    group: bin_quality_check_options
+    help: 'E.g. https://busco-data.ezlab.org/v5/data/lineages/bacteria_odb10.2020-03-06.tar.gz.
+      Available databases are listed here: https://busco-data.ezlab.org/v5/data/lineages/.'
+    hidden: false
+  mag.busco_download_path:
+    description: Path to local folder containing already downloaded and unpacked lineage
+      datasets.
+    group: bin_quality_check_options
+    help: If provided, BUSCO analysis will be run in offline mode. Data can be downloaded
+      from https://busco-data.ezlab.org/v5/data/ (files still need to be unpacked
+      manually). Run in combination with automated lineage selection.
+    hidden: false
+  mag.busco_auto_lineage_prok:
+    description: Run BUSCO with automated lineage selection, but ignoring eukaryotes
+      (saves runtime).
+    group: bin_quality_check_options
+    help: ''
+    hidden: false
+  mag.save_busco_reference:
+    description: Save the used BUSCO lineage datasets provided via --busco_reference
+      or downloaded when not using --busco_reference or --busco_download_path.
+    group: bin_quality_check_options
+    help: Useful to allow reproducibility, as BUSCO datasets are frequently updated
+      and old versions do not always remain accessible.
+    hidden: false
+parameter_group:
+  input_output_options:
+    description: Define where the pipeline should find input data and save output
+      data.
+    help: null
+    title: Input/output options
+  reference_genome_options:
+    description: Reference genome related files and options required for the workflow.
+    help: null
+    title: Reference genome options
+  institutional_config_options:
+    description: Parameters used to describe centralised config profiles. These should
+      not be edited.
+    help: The centralised nf-core configuration profiles use a handful of pipeline
+      parameters to describe themselves. This information is then printed to the Nextflow
+      log when you run a pipeline. You should not need to change these values when
+      you run a pipeline.
+    title: Institutional config options
+  max_job_request_options:
+    description: Set the top limit for requested resources for any single job.
+    help: 'If you are running on a smaller system, a pipeline step requesting more
+      resources than are available may cause the Nextflow to stop the run with an
+      error. These options allow you to cap the maximum resources requested by any
+      single job so that the pipeline will run on your system.
+
+
+      Note that you can not _increase_ the resources requested by any job using these
+      options. For that you will need your own configuration file. See [the nf-core
+      website](https://nf-co.re/usage/configuration) for details.'
+    title: Max job request options
+  generic_options:
+    description: Less common options for the pipeline, typically set in a config file.
+    help: 'These options are common to all nf-core pipelines and allow you to customise
+      some of the core preferences for how the pipeline runs.
+
+
+      Typically these options would be set in a Nextflow config file loaded for all
+      pipeline runs, such as `~/.nextflow/config`.'
+    title: Generic options
+  reproducibility_options:
+    description: Use these parameters to also enable reproducible results from the
+      individual assembly and binning tools .
+    help: ''
+    title: Reproducibility options
+  quality_control_for_short_reads_options:
+    description: ''
+    help: null
+    title: Quality control for short reads options
+  quality_control_for_long_reads_options:
+    description: ''
+    help: null
+    title: Quality control for long reads options
+  taxonomic_profiling_options:
+    description: Taxonomic classification is disabled by default. You have to specify
+      one of the options below to activate it.
+    help: null
+    title: Taxonomic profiling options
+  assembly_options:
+    description: ''
+    help: null
+    title: Assembly options
+  gene_prediction_options:
+    description: ''
+    help: null
+    title: Gene prediction options
+  binning_options:
+    description: ''
+    help: null
+    title: Binning options
+  bin_quality_check_options:
+    description: ''
+    help: null
+    title: Bin quality check options
